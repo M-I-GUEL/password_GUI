@@ -1,7 +1,7 @@
 import sys
 import random
 import string
-from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QLineEdit,QPushButton,QVBoxLayout
+from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QLineEdit,QPushButton,QVBoxLayout,QMessageBox
 #Build a password Generator GUI with python
 class PasswordGeneratorApp(QWidget):
     def __init__(self):
@@ -9,17 +9,22 @@ class PasswordGeneratorApp(QWidget):
          self.setWindowTitle('Password Generator')
          self.setup_ui() 
     def generate_password(self):
-        password_length = int(self.input_box.text())
-        print(password_length)
+        length = (self.input_box.text())
+        #logic to validate user input
+        if length.isdigit():
+            password_length = int(self.input_box.text())
+            if password_length >=8 and password_length <=20:
+                empty=[]
+                for p in range(password_length):
+                    x = random.choice(string.ascii_letters)
+                    empty.append(x)
+                    password = ''.join(empty)
+                    self.password.setText(password)
+            else:
+                QMessageBox.warning(self,'Error!','Passwords must contain at least 8 to 20 characters!')
+        else:
+                QMessageBox.warning(self,'Error!','Enter a valid number')
         description_text = self.description_box.text()
-        print(description_text)
-        empty = []
-        for p in range(password_length):
-            x = random.choice(string.ascii_letters)
-            empty.append(x)
-        password = ''.join(empty)
-        self.password.setText(password)
-        print(password)
     def save_password(self):
         password = self.password.text()
         description = self.description_box.text()
@@ -32,10 +37,12 @@ class PasswordGeneratorApp(QWidget):
         description = QLabel('Description (optional):')
         self.description_box = QLineEdit()
         button = QPushButton('Generate password')
+        #connects the button to the Generate password function
         button.clicked.connect(self.generate_password)
         password_label = QLabel('Generated Password:')
         self.password = QLineEdit()
         save_btn = QPushButton('Save password')
+        #connects the button to the Generate password function
         button.clicked.connect(self.save_password)
         layout.addWidget(label)
         layout.addWidget(self.input_box)
